@@ -28,46 +28,67 @@ class AvailableDatabases(Enum):
 
 class EncodeSystem:
     def __init__(self, config: Dict[str, List[str]], abecedary: str=ABECEDARY):
-        self.abecedary = {letter for letter in abecedary}
-
         self.config = config
-        self.used_letters = set()
-        for letters_for_number in self.config.values():
-            for letter in letters_for_number:
-                self.used_letters.add(letter)
-        self.unused_letters = self.abecedary - self.used_letters
+        max_len_coded_key = max([len(key) for key in self.config.keys()])
+        if max_len_coded_key > 2:
+            raise ValueError("Patterns should be composed by at most 2 letters")
 
-    @property
-    def unused(self):
-        return "".join(self.unused_letters)
+
+    def decode(self, encoded_word: str) -> str:
+        decoded_word = ""
+        letter_index = 0
+        while letter_index < len(encoded_word)-1:
+            current_letter = encoded_word[letter_index]
+            next_letter = encoded_word[letter_index+1]
+
+            key = self.config.get(current_letter + next_letter)
+            if key is not None:
+                decoded_word += key
+                letter_index += 2
+            else:
+                key = self.config.get(current_letter)
+                if key is not None:
+                    decoded_word += key
+                letter_index += 1
+
+        if letter_index == len(encoded_word) - 1:
+            last_letter = encoded_word[-1]
+            key = self.config.get(last_letter)
+            if key is not None:
+                decoded_word += key
+        return decoded_word
 
 
     def encode(self, number: str, words: pd.DataFrame) -> pd.DataFrame:
-        regex = f"^[{self.unused}]*"
-        for d in number:
-            digit_letters = "|".join(self.config[d])
-            digit_regex = f"[{digit_letters}]"
-            regex += digit_regex
-            regex += f"[{self.unused}]*"
-        regex += "$"
-        print(f"regex for {args.number} {repr(regex)}")
-        filtered_words = words[words.word.str.contains(regex)]
+        words["decoded"] = words.word.apply(self.decode)
+        filtered_words = words[words.decoded == number]
         return filtered_words
 
 
 class MyEncodeSystem(EncodeSystem):
     def __init__(self):
         config = {
-            "0": ["r"],
-            "1": ["d", "t"],
-            "2": ["n", "ñ"],
-            "3": ["m"],
-            "4": ["c", "k", "q"],
-            "5": ["l"],
-            "6": ["s", "z", "x"],
-            "7": ["f", "j"],
-            "8": ["g", "ch"],
-            "9": ["b", "p", "v"]
+            "r": "0",
+            "d": "1",
+            "t": "1",
+            "n": "2",
+            "gn": "2",
+            "ñ": "2",
+            "m": "3",
+            "c": "4",
+            "k": "4",
+            "q": "4",
+            "l": "5",
+            "s": "6",
+            "x": "6",
+            "z": "6",
+            "f": "7",
+            "j": "7",
+            "g": "8",
+            "ch": "8",
+            "b": "9",
+            "p": "9",
+            "v": "9",
         }
         super().__init__(config)
 
@@ -78,6 +99,7 @@ class AvailableEncodeSystems(Enum):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Translate to words')
     parser.add_argument("--number", "-n", type=str, help='number to convert to words')
+    parser.add_argument("--encoder", "-e", type=str, default="mine", help='number to convert to words')
 
     args = parser.parse_args()
     print(f"Number: {args.number}")
@@ -87,7 +109,7 @@ if __name__ == "__main__":
     word_database = AvailableDatabases.SPANISH.value
     words = word_database.get_db()
 
-    encoder = AvailableEncodeSystems.MINE.value
+    encoder = AvailableEncodeSystems[args.encoder.upper()].value
 
     encoded_words = encoder.encode(number, words)
 
