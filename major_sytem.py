@@ -21,9 +21,19 @@ class SpanishDatabase(WordsDatabase):
         self.words = pd.read_csv(self.path, header=None, sep=" ", names=["word", "comment"], encoding="ISO-8859-1")
         return self.words
 
+class EnglishDatabase(WordsDatabase):
+    def __init__(self):
+        path = "words_dbs/english3.txt"
+        name = "English"
+        super().__init__(path, name)
+
+    def get_db(self) -> pd.DataFrame:
+        self.words = pd.read_csv(self.path, header=None, names=["word"], keep_default_na=False, encoding="utf-8")
+        return self.words
 
 class AvailableDatabases(Enum):
     SPANISH = SpanishDatabase()
+    ENGLISH = EnglishDatabase()
 
 
 class EncodeSystem:
@@ -100,13 +110,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Translate to words')
     parser.add_argument("--number", "-n", type=str, help='number to convert to words')
     parser.add_argument("--encoder", "-e", type=str, default="mine", help='number to convert to words')
+    parser.add_argument("--database", "-d", type=str, default="spanish", help='Database of words to be used')
 
     args = parser.parse_args()
     print(f"Number: {args.number}")
     number = args.number
 
 
-    word_database = AvailableDatabases.SPANISH.value
+    word_database = AvailableDatabases[args.database.upper()].value
     words = word_database.get_db()
 
     encoder = AvailableEncodeSystems[args.encoder.upper()].value
