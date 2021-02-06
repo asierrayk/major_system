@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "major_system"
+version = "0.1.0"
+description = "Encode and decode according to your major system"
+authors = ["Asier Cardoso Sánchez <asier314@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7.1"
+pandas = "^1.2.1"
+Flask = "^1.1.2"
+gunicorn = "^20.0.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
