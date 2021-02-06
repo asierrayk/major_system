@@ -1,0 +1,14 @@
+certifi==2020.4.5.1
+cffi==1.14.0
+chardet==3.0.4
+docutils==0.16
+future==0.18.2
+gatt==0.2.7
+idna==2.9
+Kivy==1.11.1
+Kivy-Garden==0.1.4
+kociemba==1.2
+pycparser==2.20
+Pygments==2.6.1
+requests==2.23.0
+urllib3==1.25.9
