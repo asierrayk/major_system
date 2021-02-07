@@ -8,11 +8,12 @@ def main():
     word = "main"
     return render_template("index.html", word=word)
 
-@app.route('/encode/')
+@app.route('/encode/', methods=['GET'])
 def encode():
-    number = request.args.get("number")
+    search = request.args.get("search")
     results = None
-    if number is not None:
+    search_method = "encode"
+    if search is not None:
         database = "spanish"
         encoder = "mine"
 
@@ -21,10 +22,10 @@ def encode():
 
         encoder = AvailableEncodeSystems[encoder.upper()].value
 
-        encoded_words = encoder.encode(number, words)
+        encoded_words = encoder.encode(search, words)
 
         results = encoded_words.word.tolist()
-    return render_template("encode.html", results=results)
+    return render_template("search.html", search_method=search_method, results=results)
 
 @app.route('/decode/')
 def decode():
