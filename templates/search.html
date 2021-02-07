@@ -3,6 +3,14 @@
 <div class="d-flex justify-content-center">
     <form action="{{ url_for(search_method) }}">
         <input name="search" type="text" class="form-control" placeholder="Search" value="" required />
+        {%for db in available_dbs%}
+            <div class="form-check">
+              <input name="db" class="form-check-input" type="checkbox" class="form-control" value="{{db}}" id="flexCheckDefault">
+              <label class="form-check-label" for="flexCheckDefault">
+                {{ db }}
+              </label>
+            </div>
+        {%endfor%}
         <button type="submit" class="btn btn-dark">Go!</button>
     </form>
 </div>
