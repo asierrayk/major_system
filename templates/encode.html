@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <input type="text" class="form-control" placeholder="Search.." name="search">
+    <button type="button" class="btn btn-dark">Go!</button>
+</div>
+{%if results%}
+    {%for result in results%}
+        <li>{{ result }}</li>
+    {%endfor%}
+{%endif%}
+{% endblock %}
