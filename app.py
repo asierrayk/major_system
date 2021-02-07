@@ -4,12 +4,12 @@ import pandas as pd
 app = Flask(__name__)
 
 
-@app.route('/')
-def main():
+@app.route('/about/')
+def about():
     word = "main"
-    return render_template("index.html", word=word)
+    return render_template("about.html", word=word)
 
-@app.route('/encode/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def encode():
     search = request.args.get("search")
     dbs = request.args.getlist("db")
@@ -37,13 +37,11 @@ def encode():
 
 @app.route('/decode/')
 def decode():
-    word = "decode"
-    return render_template("index.html", word=word)
+    return render_template("about.html")
 
 @app.route('/configuration/')
 def configuration():
-    word = "configuration"
-    return render_template("index.html", word=word)
+    return render_template("about.html")
 
 if __name__ == '__main__':
     app.run()
